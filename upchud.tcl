@@ -15,6 +15,8 @@ set mangle_char_set {0123456789abcdefghijklmnopqrstuvwxyz}
 # $::mangle_lenght and $::mangle_char_set are small, you could end up with a dead lock.
 # This value is the fail-safe.
 set max_save_attempts 20
+# Alternative to $::max_save_attempts. When on, collisons clobber.
+set overwrite_uploads 0
 # The output of this function is (ideally) what the user will see.
 # I have provided a few default behaviours, but you do you champ.
 proc send_success {upload_name} {
@@ -107,13 +109,19 @@ proc get_out_name {orig_name} {
         return $name
     }
 
-    if { $::mangle_lenght == 0 } { return $orig_name }
+    if { $::mangle_lenght == 0 } {
+        if { $::overwrite_uploads || ![file exists $out_name] } {
+            return "$::outdir/$orig_name"
+        } else {
+            raise_fatal
+        }
+    }
 
     set extension [file extension $orig_name]
 
     for { set tries 1 } { $tries <= $::max_save_attempts } { incr tries } {
         set out_name "$::outdir/[get_random_name]$extension"
-        if { ![file exists $out_name] } { break }
+        if { $::overwrite_uploads || ![file exists $out_name] } { break }
     }
 
     return $out_name
