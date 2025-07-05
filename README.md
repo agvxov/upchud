@@ -16,7 +16,7 @@
 
 ### Files
 |     File      | Description |
-| :-----------: | :---------: |
+| :------------ | :---------- |
 | lighttpd.conf | Master lighttpd configuration. Tip: set max upload size here. |
 | upchud.tcl    | Master CGI Tcl script. Tip: simply forked by lighttpd; set finer configurations here. |
 | Makefile      | Short-hands for common operations. |
