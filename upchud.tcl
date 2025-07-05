@@ -19,10 +19,14 @@ set max_save_attempts 20
 # I have provided a few default behaviours, but you do you champ.
 proc send_success {upload_name} {
     proc simple {upload_name} {
+        set scheme $::env(REQUEST_SCHEME)
+        set host   $::env(HTTP_HOST)
+        set url "$scheme://$host/$upload_name"
+
         puts "Status: 200 OK\r"
         puts "Content-Type: text/plain\r"
         puts "\r"
-        puts "$upload_name"
+        puts "$url"
     }
 
     proc link {upload_name} {
