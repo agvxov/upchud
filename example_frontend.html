@@ -1,12 +1,31 @@
-<div style="width: 400px;">
-    <form action="http://localhost:8080" method="post" enctype="multipart/form-data">
-        <fieldset>
-            <legend>Upload a file</legend>
-            <label>
-                Select file:
-                <input type="file" name="file" required>
-            </label>
-            <button type="submit">Upload</button>
-        </fieldset>
-    </form>
+<div>
+    <div style="width: 400px;">
+        <form action="http://localhost:8080" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <legend>Upchud a file</legend>
+                <label>
+                    Select file:
+                    <input type="file" name="file" required>
+                </label>
+                <button type="submit">Upload</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <p>
+        You may upload files using the above form or the following command:
+        </br><b><code>
+            curl --upload-file 'MUH.FILE' HOST
+        </code></b>
+        </br>NOTE: Files are probably going to be purged after a while,
+        this is most definetly not AnyDrive.
+    </p>
+    <p>
+        Upchud is a FOSS file uploader service, originally developed for
+        <a href=https://up.chud.cyou/>https://up.chud.cyou/</a>
+    </p>
+    <p>
+        You may find the source code here:
+        <a href="https://git.xolatile.top/anon/upchud">https://git.xolatile.top/anon/upchud</a>
+    </p>
 </div>
