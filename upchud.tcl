@@ -169,6 +169,7 @@ if { $method eq "PUT" } {
     #  the filename parameter is not guaranteed to be provided
     #  and not guaranteed to be quoted
     if {![regexp {filename="(.+)"} $header -> original_name]} { set original_name "" }
+    set original_name [file tail $original_name]
 
     proc write_body {out_name} {
         set f [open $out_name "wb"]
