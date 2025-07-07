@@ -1,0 +1,1 @@
+@monthly find /var/www/up.chud.cyou/out/ -type f -mtime +28 -exec rm {} \;
