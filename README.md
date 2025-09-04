@@ -76,7 +76,7 @@ To learn more about configuration, read the top of `upchud.tcl` and checkout `li
 
 For the mentally Polish, `nginx.conf` is provided,
 which is the snippet that was used for the main deployment of upchud.
-> ![NOTE]
+> [!NOTE]
 > You will have to edit the paths because nginx is shit.
 
 ### Why?
