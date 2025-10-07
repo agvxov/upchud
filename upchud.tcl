@@ -5,17 +5,26 @@
 # ---
 # Directory to place the files to.
 set outdir "out/"
-# The lenght of the random name every file is assigned.
-# Setting it to 0 disables random name mangling.
-set mangle_lenght 6
-# The characters which may appear within the basename of a generated random file name.
-set mangle_char_set {0123456789abcdefghijklmnopqrstuvwxyz}
+# Method for naming uploads.
+# Options are:
+#   simple - just restrict into $::label_char_set
+#   mangle - random name
+#   hash   - deduplicates, but requires tcllib
+set labeling_scheme "simple"
+# The lenght of the generated base name. Applies to mangled and hashed names.
+set auto_label_lenght 6
+# The characters which are allowed to be used in upload names.
+#  '.' is always implicitly allowed. Do NOT specify '.' or '/'.
+set label_char_set {0123456789abcdefghijklmnopqrstuvwxyz}
+#set label_char_set {0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáÁeéóÓöÖőŐúÚüÜűŰ -_}
 # Every random name has a chance to collide with a previously saved file.
 # Theoretically if you don't clean your uploads and both your
-# $::mangle_lenght and $::mangle_char_set are small, you could end up with a dead lock.
+# $::auto_label_lenght and $::label_char_set are small, you could end up with a dead lock.
 # This value is the fail-safe.
 set max_save_attempts 20
-# Alternative to $::max_save_attempts. When on, collisons clobber.
+# Trying to overwrite an upload will yield an error by default. When on, collisons clobber.
+#  With mangling, its an alternative to $::max_save_attempts.
+#  With hashing, required for deduping.
 set overwrite_uploads 0
 # The output of this function is (ideally) what the user will see.
 # I have provided a few default behaviours, but you do you champ.
@@ -101,31 +110,73 @@ proc splitstr {text delim} {
     return $result
 }
 
-proc get_out_name {orig_name} {
+proc get_out_name {orig_name temp_path} {
+    proc restrict_string {s} {
+        set r ""
+
+        for {set i 0} {$i < [string length $s]} {incr i} {
+            set c [string index $s $i]
+
+            if {[string first $c $::label_char_set] == -1 && $c ne "."} {
+                binary scan $c c code
+                set c [
+                    string index \
+                        $::label_char_set \
+                        [expr { $code % [string length $::label_char_set] }]
+                ]
+            }
+
+            append r $c
+        }
+
+        return $r
+    }
+
     proc get_random_name {} {
-        set chars $::mangle_char_set
+        set chars $::label_char_set
         set name ""
-        for {set i 0} {$i < $::mangle_lenght} {incr i} {
+        for {set i 0} {$i < $::auto_label_lenght} {incr i} {
             append name [string index $chars [expr {int(rand()*[string length $chars])}]]
         }
         return $name
     }
 
-    if { $::mangle_lenght == 0 } {
-        if { $::overwrite_uploads || ![file exists $out_name] } {
-            return "$::outdir/$orig_name"
-        } else {
-            raise_fatal
-        }
+    proc get_contents_hash {path} {
+        package require sha1
+        return [sha1::sha1 -filename $path -hex]
     }
 
     # NOTE: `file extension` only returns the last extension, but `.tar.gz` is relevant for us
     #set extension [file extension $orig_name]
     regexp {(\..+)$} $orig_name -> extension
 
-    for { set tries 1 } { $tries <= $::max_save_attempts } { incr tries } {
-        set out_name "$::outdir/[get_random_name]$extension"
-        if { $::overwrite_uploads || ![file exists $out_name] } { break }
+    if { $::labeling_scheme == "simple" } {
+        set out_name $::outdir/[restrict_string $orig_name]
+        if { ! $::overwrite_uploads && [file exists $out_name] } {
+            raise_fatal
+        }
+    } elseif { $::labeling_scheme == "mangle" } {
+        set restricted_extension [restrict_string $extension]
+        set name_found 0
+        for { set tries 1 } { $tries <= $::max_save_attempts } { incr tries } {
+            set out_name "$::outdir/[get_random_name]$restricted_extension"
+            if { $::overwrite_uploads || ![file exists $out_name] } {
+                set name_found 1
+                break
+            }
+        }
+        if { ! $name_found } {
+            raise_fatal
+        }
+    } elseif { $::labeling_scheme == "hash" } {
+        set out_name [get_contents_hash $temp_path]
+        set out_name [string range $out_name 0 [expr {$::auto_label_lenght-1}]]
+        set out_name $out_name$extension
+        set out_name [restrict_string $out_name]
+        set out_name "$::outdir/$out_name"
+        if { ! $::overwrite_uploads && [file exists $out_name] } {
+            raise_fatal
+        }
     }
 
     return $out_name
@@ -188,8 +239,10 @@ if { $method eq "PUT" } {
 }
 
 if { ![file isdirectory $outdir] } { file mkdir $outdir }
-set output_name [get_out_name $original_name]
-eval $write_file $output_name
+close [file tempfile temp_path]
+eval $write_file $temp_path
+set output_name [get_out_name $original_name $temp_path]
+file rename -force $temp_path $output_name
 
 send_success $output_name
 
