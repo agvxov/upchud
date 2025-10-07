@@ -117,7 +117,9 @@ proc get_out_name {orig_name} {
         }
     }
 
-    set extension [file extension $orig_name]
+    # NOTE: `file extension` only returns the last extension, but `.tar.gz` is relevant for us
+    #set extension [file extension $orig_name]
+    regexp {(\..+)$} $orig_name -> extension
 
     for { set tries 1 } { $tries <= $::max_save_attempts } { incr tries } {
         set out_name "$::outdir/[get_random_name]$extension"
