@@ -5,14 +5,16 @@
 * Minimal dependencies
 * CLI friendly
 * Web friendly
-* Optional random upload name mangling
 * Easy to configure
-* Small codebase
+* Optional random upload name mangling
+* Optional Hash based deduping
+* Small and clean codebase
 * Traubisoda
 
 ### Depedencies
 * Lighttpd
 * Tcl (base installation)
+* Tcllib (only required when `$::labeling_scheme` is configured to `hash`)
 
 ### Architecture
 ```
@@ -29,7 +31,7 @@ Lighttpd is recommended, but nginx was tested too.
 The script does its thing.
 
 To keep your uploads clean,
-you either have to set clobbering in the script or
+you either have to enable clobbering in the script or
 deploy some sort of dedicated cleaner.
 
 The simplest form of cleaner is a cron job that deletes files too old.
