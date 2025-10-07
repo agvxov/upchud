@@ -56,8 +56,10 @@ proc send_success {upload_name} {
 
     set agent $::env(HTTP_USER_AGENT)
 
+    # Curl client aka terminal
     if {[regexp -nocase {curl} $agent]} {
         simple $upload_name
+    # Browser clients
     } else {
         link $upload_name
         #redirect $upload_name
