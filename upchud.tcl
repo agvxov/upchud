@@ -148,6 +148,7 @@ proc get_out_name {orig_name temp_path} {
 
     # NOTE: `file extension` only returns the last extension, but `.tar.gz` is relevant for us
     #set extension [file extension $orig_name]
+    set extension ""
     regexp {(\..+)$} $orig_name -> extension
 
     if { $::labeling_scheme == "simple" } {
