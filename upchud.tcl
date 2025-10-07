@@ -16,7 +16,7 @@ set auto_label_lenght 6
 # The characters which are allowed to be used in upload names.
 #  '.' is always implicitly allowed. Do NOT specify '.' or '/'.
 set label_char_set {0123456789abcdefghijklmnopqrstuvwxyz}
-#set label_char_set {0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáÁeéóÓöÖőŐúÚüÜűŰ -_}
+#set label_char_set {0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáÁéóÓöÖőŐúÚüÜűŰ -_}
 # Every random name has a chance to collide with a previously saved file.
 # Theoretically if you don't clean your uploads and both your
 # $::auto_label_lenght and $::label_char_set are small, you could end up with a dead lock.
