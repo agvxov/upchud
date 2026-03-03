@@ -12,7 +12,7 @@
 * Traubisoda
 
 ### Depedencies
-* Lighttpd
+* Lighttpd (or some any server but **at your own risk**)
 * Tcl (base installation)
 * Tcllib (only required when `$::labeling_scheme` is configured to `hash`)
 
@@ -34,14 +34,14 @@ To keep your uploads clean,
 you either have to enable clobbering in the script or
 deploy some sort of dedicated cleaner.
 
-The simplest form of cleaner is a cron job that deletes files too old.
+The simplest form of cleaner is a cron job that deletes files that are too old.
 
 ### Files
 |     File        | Description |
 | :-------------- | :---------- |
 | lighttpd.conf   | Master lighttpd configuration. Tip: set max upload size here. |
 | upchud.tcl      | Master CGI Tcl script. Tip: simply forked by lighttpd; set finer configurations here. |
-| Makefile        | Short-hands for common operations. |
+| Makefile        | Short-hands for common operations. No compiles. |
 | cleaner.crontab | Simple cleaner job. |
 | test/*          | Scripts and files used during development. |
 | example\_frontend.html          | Simple web front-end for the service. |
@@ -49,7 +49,7 @@ The simplest form of cleaner is a cron job that deletes files too old.
 | nginx.conf | Example nginx configuration snippet. |
 
 ### Usage
-Lets get hello-world out-of the way:
+Lets get hello-world out of the way:
 ```sh
 $ make serve &
 [1] 15225
@@ -69,7 +69,7 @@ $ make front &
 [2] 24105
 lighttpd -D -f example_frontend.lighttpd.conf
 ```
-And I could use the web page (localhost:8081 by default) to perform the same task.
+And I could use a web page (localhost:8081 by default) to perform the same task.
 
 The example frontend is perfectly functional, but is meant to be modified.
 Alternatively, you could copy and embed it anywhere else on your site at large.
