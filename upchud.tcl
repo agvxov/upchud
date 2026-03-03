@@ -9,7 +9,14 @@ set outdir "out/"
 # Options are:
 #   simple - just restrict into $::label_char_set
 #   mangle - random name
-#   hash   - deduplicates, but requires tcllib
+#   hash   - deduplicates
+# The 'hash' option requires tcllib.
+# Tcllib has provides 2 implementations, a pure Tcl and a C accelerated one.
+# Unless you compiled it your-self and by hand,
+#  you probably have the Tcl implementation installed,
+#  which happens to be slow as hell at hashing.
+# In particular, image uploads will take multiple seconds
+#  and video uploads will timeout.
 set labeling_scheme "simple"
 # The lenght of the generated base name. Applies to mangled and hashed names.
 set auto_label_lenght 6
