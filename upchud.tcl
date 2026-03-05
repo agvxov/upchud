@@ -260,3 +260,6 @@ send_success $output_name
 #   foreach name [lsort [array names ::env]] {
 #       puts stderr "$name = $::env($name)"
 #   }
+#
+# --
+# Upchud is in the public domain.

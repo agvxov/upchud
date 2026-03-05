@@ -88,3 +88,6 @@ Common faults I witnessed are:
 * No web support, preventing phoneposting
 * Horrifically convoluted configuration due to poor isolation of responsibilities
 * 6 gorillion dependencies
+
+### License
+Upchud is in the public domain.
